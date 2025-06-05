@@ -26,7 +26,7 @@ const BookingSection = () => {
                     <Cal
                         namespace="booking"
                         calLink="livan121/booking"
-                        style={{ width: "100%", height: "500px", borderRadius: "0.75rem", backgroundColor: "#fff" }}
+                        style={{ width: "100%", height: "700px", borderRadius: "0.75rem", backgroundColor: "#fff" }}
                         config={{ layout: "month_view" }}
                     />
                 </div>
