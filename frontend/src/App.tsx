@@ -1,6 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "react-hot-toast";
 import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import ProductPage from "./pages/ProductPage";
@@ -26,11 +26,13 @@ import TermsConditions from "./pages/TermsConditions";
 import RefundPolicy from "./pages/RefundPolicy";
 import HelpSupport from "./pages/HelpSupport";
 import NotFound from "./pages/NotFound";
+// import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-background">
+        <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutUs />} />
@@ -58,7 +60,7 @@ function App() {
           <Route path="/help" element={<HelpSupport />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Toaster />
+       
       </div>
     </Router>
   );

@@ -10,6 +10,7 @@ import ContactSection from "@/components/sections/ContactSection";
 import CTASection from "@/components/sections/CTASection";
 import FAQSection from "@/components/common/faqSection";
 import BookingSection from "@/components/sections/BookingSection";
+import BookingForm from "./BookingForm";
 
 const Index = () => {
   return (
@@ -22,6 +23,7 @@ const Index = () => {
         <ServicesCarousel />
         <PricingCarousel />
         <BookingSection />
+        <BookingForm />
         <ContactSection />
         <FAQSection />
         <MissionSection />

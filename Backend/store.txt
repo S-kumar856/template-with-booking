@@ -1,0 +1,160 @@
+// create database if not exists
+// await db.execute(`create database hotel_data`);
+// console.log(await db.query(`show databases`));
+
+// creating tsble 
+// await db.execute(`
+//     create table ContactDetails(
+//         id int auto_increment primary key,
+//         first_name varchar(255) not null,
+//         last_name varchar(255) not null,
+//         email varchar(255) not null,
+//         phone varchar(15) not null,
+//         subject varchar(255) not null,
+//         message text not null
+//     );
+//     `);
+
+// await db.execute(` alter table ContactDetails modify phone varchar(15) not null; `);
+
+
+
+// insert the data
+// await db.execute(`
+//     insert into ContactDetails(first_name, last_name, email, phone, subject, message) 
+//     values('kumar', 'sabavat', 'kumar@gmail.com', 1234567890, 'test subject', 'test message');
+//     `);
+
+// const values = [
+//     ['John', 'Doe', 'john@gmail.com', '1234567891', 'Inquiry', 'This is a test message.'],
+//     ['Jane', 'Smith', 'jane@mail.com', '9876543210', 'Feedback', 'This is another test message.'],
+//     ['Alice', 'Johnson', 'Alice@mail.com', '1122334455', 'Support', 'Need help with my booking.'],
+//     ['Bob', 'Brown', 'bob@mail.com', '5566778899', 'Complaint', 'I have an issue with my last stay.'],
+// ];
+
+// insert multiple rows into ContactDetails table
+// await db.query(`
+//     insert into ContactDetails(first_name, last_name, email, phone, subject, message) 
+//     values ?
+//     `, [values]);
+
+// await db.execute(` delete from contactdetails where id not in
+//     (select * from (
+//     select min(id) from contactdetails group by first_name, last_name, email, phone, subject, message)as temp) `);
+
+
+
+
+import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import Section from "@/components/ui/section";
+import SectionHeader from "@/components/ui/section-header";
+import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+
+const ContactUs = () => {
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:3000/contact-details", form);
+      toast.success("Message sent successfully!");
+      setForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      toast.error("Failed to send message. Try again later.");
+      console.error(error);
+    }
+  };
+
+  return (
+    <Layout>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-5xl font-bold mb-6">Get In Touch</h1>
+          <p className="text-xl max-w-3xl mx-auto opacity-90">
+            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          </p>
+        </div>
+      </section>
+
+      <Section background="white">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Contact Form */}
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg border-0">
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-3">
+                  <Send className="w-6 h-6 text-primary" />
+                  Send us a Message
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="firstName">First Name *</Label>
+                      <Input id="first_name" value={form.first_name} onChange={handleChange} className="mt-2 h-12" />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Input id="last_name" value={form.last_name} onChange={handleChange} className="mt-2 h-12" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input id="email" type="email" value={form.email} onChange={handleChange} className="mt-2 h-12" />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" value={form.phone} onChange={handleChange} className="mt-2 h-12" />
+                  </div>
+                  {/* <div>
+                    <Label htmlFor="subject">Subject *</Label>
+                    <Input id="subject" value={form.subject} onChange={handleChange} className="mt-2 h-12" />
+                  </div> */}
+                  <div>
+                    <Label htmlFor="message">Message *</Label>
+                    <Textarea id="message" rows={6} value={form.message} onChange={handleChange} className="mt-2" />
+                  </div>
+                  <Button type="submit" size="lg" className="w-full md:w-auto px-8 py-3 text-lg hover:scale-105 transition-transform duration-300">
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* ...Rest of your contact info remains unchanged... */}
+        </div>
+      </Section>
+
+      {/* Map Section remains unchanged */}
+    </Layout>
+  );
+};
+
+export default ContactUs;

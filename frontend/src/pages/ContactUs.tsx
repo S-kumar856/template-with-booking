@@ -1,4 +1,6 @@
-
+import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +12,36 @@ import SectionHeader from "@/components/ui/section-header";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 
 const ContactUs = () => {
+  const [form, setForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:3000/contact-details", form);
+      toast.success("Message sent successfully!");
+      setForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      toast.error("Failed to send message. Try again later.");
+      console.error(error);
+    }
+  };
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -17,7 +49,8 @@ const ContactUs = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold mb-6">Get In Touch</h1>
           <p className="text-xl max-w-3xl mx-auto opacity-90">
-            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            We'd love to hear from you. Send us a message and we'll respond as
+            soon as possible.
           </p>
         </div>
       </section>
@@ -34,43 +67,83 @@ const ContactUs = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="firstName" className="text-base font-medium">First Name *</Label>
-                    <Input id="firstName" placeholder="John" className="mt-2 h-12" />
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label
+                        htmlFor="firstName"
+                        className="text-base font-medium"
+                      >
+                        First Name *
+                      </Label>
+                      <Input
+                        id="first_name"
+                        value={form.first_name}
+                        onChange={handleChange}
+                        className="mt-2 h-12"
+                      />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="lastName"
+                        className="text-base font-medium"
+                      >
+                        Last Name *
+                      </Label>
+                      <Input
+                        id="last_name"
+                        value={form.last_name}
+                        onChange={handleChange}
+                        className="mt-2 h-12"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <Label htmlFor="lastName" className="text-base font-medium">Last Name *</Label>
-                    <Input id="lastName" placeholder="Doe" className="mt-2 h-12" />
+                    <Label htmlFor="email" className="text-base font-medium">
+                      Email Address *
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      className="mt-2 h-12"
+                    />
                   </div>
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-base font-medium">Email Address *</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" className="mt-2 h-12" />
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="text-base font-medium">Phone Number</Label>
-                  <Input id="phone" placeholder="(555) 123-4567" className="mt-2 h-12" />
-                </div>
-                <div>
+                  <div>
+                    <Label htmlFor="phone" className="text-base font-medium">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      className="mt-2 h-12"
+                    />
+                  </div>
+                  {/* <div>
                   <Label htmlFor="subject" className="text-base font-medium">Subject *</Label>
                   <Input id="subject" placeholder="How can we help you?" className="mt-2 h-12" />
-                </div>
-                <div>
-                  <Label htmlFor="message" className="text-base font-medium">Message *</Label>
-                  <Textarea 
-                    id="message" 
-                    rows={6} 
-                    placeholder="Tell us more about your inquiry..." 
-                    className="mt-2 resize-none"
-                  />
-                </div>
-                <Button 
-                  size="lg" 
-                  className="w-full md:w-auto px-8 py-3 text-lg hover:scale-105 transition-transform duration-300"
-                >
-                  Send Message
-                </Button>
+                </div> */}
+                  <div>
+                    <Label htmlFor="message" className="text-base font-medium">
+                      Message *
+                    </Label>
+                    <Textarea
+                      id="message"
+                      rows={6}
+                      value={form.message}
+                      onChange={handleChange}
+                      className="mt-2"
+                    />
+                  </div>
+                  <Button
+                    size="lg"
+                    className="w-full md:w-auto px-8 py-3 text-lg hover:scale-105 transition-transform duration-300"
+                  >
+                    Send Message
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>
@@ -88,10 +161,14 @@ const ContactUs = () => {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Address</h3>
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      Address
+                    </h3>
                     <p className="text-gray-600 leading-relaxed">
-                      123 Business Street<br />
-                      Suite 100<br />
+                      123 Business Street
+                      <br />
+                      Suite 100
+                      <br />
                       New York, NY 10001
                     </p>
                   </div>
@@ -124,10 +201,14 @@ const ContactUs = () => {
                     <Clock className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Business Hours</h3>
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      Business Hours
+                    </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Monday - Friday: 9:00 AM - 6:00 PM<br />
-                      Saturday: 10:00 AM - 4:00 PM<br />
+                      Monday - Friday: 9:00 AM - 6:00 PM
+                      <br />
+                      Saturday: 10:00 AM - 4:00 PM
+                      <br />
                       Sunday: Closed
                     </p>
                   </div>
@@ -138,8 +219,12 @@ const ContactUs = () => {
             {/* Quick Contact */}
             <Card className="shadow-lg border-0 bg-gradient-to-br from-primary to-primary/90 text-white">
               <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-4">Need Immediate Assistance?</h3>
-                <p className="mb-4 opacity-90">Call us directly for urgent inquiries</p>
+                <h3 className="text-xl font-semibold mb-4">
+                  Need Immediate Assistance?
+                </h3>
+                <p className="mb-4 opacity-90">
+                  Call us directly for urgent inquiries
+                </p>
                 <Button variant="secondary" size="lg" className="w-full">
                   Call Now: (555) 123-4567
                 </Button>
@@ -151,7 +236,7 @@ const ContactUs = () => {
 
       {/* Map Section */}
       <Section background="gray">
-        <SectionHeader 
+        <SectionHeader
           title="Visit Our Office"
           subtitle="We're located in the heart of the business district. Drop by for a coffee and chat!"
         />
@@ -159,9 +244,15 @@ const ContactUs = () => {
           <div className="w-full h-96 bg-gray-200 flex items-center justify-center relative">
             <div className="text-center">
               <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Interactive Map</h3>
-              <p className="text-gray-600">Google Maps integration would go here</p>
-              <p className="text-sm text-gray-500 mt-2">123 Business Street, New York, NY 10001</p>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                Interactive Map
+              </h3>
+              <p className="text-gray-600">
+                Google Maps integration would go here
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                123 Business Street, New York, NY 10001
+              </p>
             </div>
           </div>
         </Card>
